@@ -1,0 +1,8 @@
+wp-data/*
+wp-app/*
+
+.env
+nginx/env/*
+
+!*.gitkeep
+!*.empty

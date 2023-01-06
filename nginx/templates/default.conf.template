@@ -1,0 +1,14 @@
+server {
+  listen 80;
+  listen [::]:80;
+  server_name ${MAIN_DOMAIN};
+
+  location / {
+    proxy_pass http://wp:80;
+  }
+
+  location ~ /.well-known/acme-challenge/ {
+    allow all;
+    root /var/www/certbot/;
+  }
+}
