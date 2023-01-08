@@ -1,5 +1,7 @@
 wp-data/*
 wp-app/*
+tour360-data/*
+filebrowser.db
 
 .env
 nginx/env/*

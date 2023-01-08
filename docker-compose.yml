@@ -6,6 +6,8 @@ networks:
 
 volumes:
   db_data:
+  certbot-etc:
+  certbot-webroot:
 
 services:
 
@@ -35,7 +37,7 @@ services:
     # ports:
     #   - 127.0.0.1:8000:80 # change ip if required
     volumes:
-      - ./config/php.conf.ini:/usr/local/etc/php/conf.d/conf.ini
+      - ./wp-config/php.conf.ini:/usr/local/etc/php/conf.d/conf.ini
       - ./wp-app:/var/www/html # Full wordpress project
       #- ./plugin-name/trunk/:/var/www/html/wp-content/plugins/plugin-name # Plugin development
       #- ./theme-name/trunk/:/var/www/html/wp-content/themes/theme-name # Theme development
@@ -53,10 +55,24 @@ services:
       - wp
     image: wordpress:cli
     volumes:
-      - ./config/php.conf.ini:/usr/local/etc/php/conf.d/conf.ini
+      - ./wp-config/php.conf.ini:/usr/local/etc/php/conf.d/conf.ini
       - ./wp-app:/var/www/html
     networks:
       - apps-network
+
+  filebrowser:
+    image: filebrowser/filebrowser:s6
+    container_name: filebrowser
+    restart: always
+    networks:
+      - apps-network
+    volumes:
+      - ./tour360-data/:/srv/360files/
+      #(v) please touch/create this file before running container
+      - ./filebrowser.db:/database/filebrowser.db
+    environment:
+      - PUID=1000
+      - PGID=1000
 
   reverse_proxy:
     depends_on:
@@ -74,10 +90,24 @@ services:
       #--- nginx configs 
       - ./nginx/configs/nginx.conf:/etc/nginx/nginx.conf
       - ./nginx/templates/:/etc/nginx/templates/
+      - ./logs/nginx/:/var/log/nginx/
       #--- certbot
-      # - certbot-etc:/etc/letsencrypt/:ro
-      # - certbot-webroot:/var/www/certbot/:ro
+      - certbot-etc:/etc/letsencrypt/:ro
+      - certbot-webroot:/var/www/certbot/:ro
+      #--- tour360
+      - ./tour360-data/:/vol/360files/
     networks:
       - apps-network
+
+  # certbot:
+  #   depends_on:
+  #     - reverse_proxy
+  #   image: certbot/certbot:v1.32.2
+  #   container_name: certbot
+  #   volumes:
+  #     - certbot-etc:/etc/letsencrypt/:rw
+  #     - certbot-webroot:/var/www/certbot/:rw
+  #   # command: certonly --email theerapat.pkcn@gmail.com --agree-tos --no-eff-email --staging --webroot --webroot-path /var/www/certbot/ -d tour360.cealect.com -d files.cealect.com
+  #   command: certonly --email theerapat.pkcn@gmail.com --agree-tos --no-eff-email --force-renewal --webroot --webroot-path /var/www/certbot/ -d tour360.cealect.com -d files.cealect.com
 
 
