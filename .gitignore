@@ -5,6 +5,7 @@ filebrowser.db
 
 .env
 nginx/env/*
+logs/nginx/*
 
 !*.gitkeep
 !*.empty
