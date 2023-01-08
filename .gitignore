@@ -8,4 +8,5 @@ nginx/env/*
 logs/nginx/*
 
 !*.gitkeep
+!*.sample
 !*.empty
