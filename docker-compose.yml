@@ -60,6 +60,7 @@ services:
     networks:
       - apps-network
 
+  #(v) Default user for first login is `admin` with pass `admin`
   filebrowser:
     image: filebrowser/filebrowser:s6
     container_name: filebrowser
